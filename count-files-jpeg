@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+if ARGV.empty?
+  script = File.basename($PROGRAM_NAME)
+  puts "Usage: #{script} directory [directory ...]"
+  exit 1
+end
+
+names = [
+  "*.jpg", "*.jpeg", "*.JPG"
+]
+
+puts `find #{ARGV.join(" ")} -name #{names.join(" -or -name ")} | wc -l`

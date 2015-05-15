@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+if ARGV.empty?
+  script = File.basename($PROGRAM_NAME)
+  puts "Usage: #{script} keyword"
+  exit 1
+end
+
+keyword = ARGV[0]
+get_info = RbConfig::CONFIG['host_os'] =~ /darwin|mac/ ? "GetFileInfo" : "stat"
+
+puts `find . -name "#{keyword}*" | xargs #{get_info}`
