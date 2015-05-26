@@ -15,8 +15,10 @@ elsif !Dir.exists?(year)
   exit 3
 end
 
-names = [
-  "*.jpg", "*.jpeg", "*.JPG",
+jpgs = [
+  "*.jpg", "*.jpeg", "*.JPG"
+]
+all = jpgs + [
   "*.bmp", "*.BMP",
   "*.gif", "*.GIF",
   "*.mov", "*.MOV",
@@ -24,7 +26,11 @@ names = [
   "*.3g*", "*.3G*"
 ]
 
+puts "    \t all\tjpeg\tdiff"
 for m in 1..12
   month = (m < 10 ? "0" : "") + m.to_s
-  puts "#{month} = " + `find #{year} -name #{names.join(" -or -name ")} | grep #{year + month} | wc -l`
+  all_num = `find #{year} -name #{all.join(" -or -name ")} | grep #{year + month} | wc -l`.strip
+  jpg_num = `find #{year} -name #{jpgs.join(" -or -name ")} | grep #{year + month} | wc -l`.strip
+  diff = all_num.to_i - jpg_num.to_i
+  puts "#{month} =\t#{all_num.rjust(4)}\t#{jpg_num.rjust(4)}\t#{diff.to_s.rjust(4)}"
 end
