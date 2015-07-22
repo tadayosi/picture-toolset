@@ -9,4 +9,6 @@ end
 keyword = ARGV[0]
 get_info = RbConfig::CONFIG['host_os'] =~ /darwin|mac/ ? "GetFileInfo" : "stat"
 
-puts `find . -name "#{keyword}*" | xargs #{get_info}`
+puts `find . -name "#{keyword}*"`.split.map { |f|
+  `#{get_info} #{f}`
+}.join "\n"
