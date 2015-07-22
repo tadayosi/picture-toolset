@@ -23,7 +23,8 @@ all = jpgs + [
   "*.gif", "*.GIF",
   "*.mov", "*.MOV",
   "*.avi", "*.AVI",
-  "*.3g*", "*.3G*"
+  "*.3g*", "*.3G*",
+  "*.mp4"
 ]
 
 puts "    \t all\tjpeg\tdiff"
