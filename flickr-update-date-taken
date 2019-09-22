@@ -5,6 +5,9 @@ require 'flickraw'
 require 'time'
 require 'colorize'
 
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
+
 config = YAML.load_file('../flickr.yml')
 FlickRaw.api_key = config['api_key']
 FlickRaw.shared_secret = config['shared_secret']
