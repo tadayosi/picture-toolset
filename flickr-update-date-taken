@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'yaml'
 require 'flickraw'
@@ -15,19 +16,19 @@ FlickRaw.shared_secret = config['shared_secret']
 if !config.key?('access_token') || !config.key?('access_secret')
   # Initial access, requesting access_token and access_secret
   token = flickr.get_request_token
-  auth_url = flickr.get_authorize_url(token['oauth_token'], :perms => 'write')
+  auth_url = flickr.get_authorize_url(token['oauth_token'], perms: 'write')
 
   puts "Open this url in your process to complete the authication process : #{auth_url}"
-  puts "Copy here the number given when you complete the process."
+  puts 'Copy here the number given when you complete the process.'
   verify = gets.strip
 
   begin
     flickr.get_access_token(token['oauth_token'], token['oauth_token_secret'], verify)
     login = flickr.test.login
     puts "Username: #{login.username}\naccess_token: #{flickr.access_token}\naccess_secret: #{flickr.access_secret}"
-    puts "Copy this to ../flickr.yml"
+    puts 'Copy this to ../flickr.yml'
   rescue FlickRaw::FailedResponse => e
-    STDERR.puts "Authentication failed : #{e.msg}"
+    warn "Authentication failed : #{e.msg}"
   end
   exit
 end
@@ -44,13 +45,14 @@ puts
 
 modified = 0
 photos = flickr.people.getPhotos(
-  :user_id => 'me',
-  :per_page => 500,
-  :min_upload_date => Time.local(year, month, 1).to_i,
-  :max_upload_date => Time.local(year + 1, 1, 1).to_i,
-  :extras => 'date_upload, date_taken, original_format, media')
+  user_id: 'me',
+  per_page: 500,
+  min_upload_date: Time.local(year, month, 1).to_i,
+  max_upload_date: Time.local(year + 1, 1, 1).to_i,
+  extras: 'date_upload, date_taken, original_format, media'
+)
 photos.each do |p|
-  next if p.media != "video"
+  next if p.media != 'video'
 
   header = "#{p.title} (#{p.media}): #{p.datetaken}"
   files = `find #{year} -name "#{p.title}*"`.split
@@ -61,28 +63,29 @@ photos.each do |p|
     next
   end
   files.each do |f|
-    info = YAML.load(`GetFileInfo #{f}`)
+    info = YAML.safe_load(`GetFileInfo #{f}`)
     created = Time.strptime(info['created'], '%m/%d/%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
-    if p.datetaken != created
-      puts header.blue
-      puts info['file']
-      puts "(local) #{created} <> (cloud) #{p.datetaken}"
-      print "Update? (y/N) "
-      answer = gets.strip
-      if answer == 'y'
-        print "Updating taken date... "
-        response = flickr.photos.setDates(
-          :photo_id => p.id,
-          :date_taken => created).to_hash
-        if response.empty?
-          puts "success!".green
-          modified += 1
-        else
-          STDERR.puts "ERROR: #{response}".red
-        end
+    next if p.datetaken == created
+
+    puts header.blue
+    puts info['file']
+    puts "(local) #{created} <> (cloud) #{p.datetaken}"
+    print 'Update? (y/N) '
+    answer = gets.strip
+    if answer == 'y'
+      print 'Updating taken date... '
+      response = flickr.photos.setDates(
+        photo_id: p.id,
+        date_taken: created
+      ).to_hash
+      if response.empty?
+        puts 'success!'.green
+        modified += 1
+      else
+        warn "ERROR: #{response}".red
       end
-      puts
     end
+    puts
   end
 end
 

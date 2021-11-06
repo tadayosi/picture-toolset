@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 if ARGV.empty?
   script = File.basename($PROGRAM_NAME)
@@ -7,7 +8,7 @@ if ARGV.empty?
 end
 
 names = [
-  "*.jpg", "*.jpeg", "*.JPG"
+  '*.jpg', '*.jpeg', '*.JPG'
 ]
 
-puts `find #{ARGV.join(" ")} -name #{names.join(" -or -name ")} | wc -l`
+puts `find #{ARGV.join(' ')} -name #{names.join(' -or -name ')} | wc -l`

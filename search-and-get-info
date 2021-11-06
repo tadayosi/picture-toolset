@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 if ARGV.empty?
   script = File.basename($PROGRAM_NAME)
@@ -7,8 +8,8 @@ if ARGV.empty?
 end
 
 keyword = ARGV[0]
-get_info = RbConfig::CONFIG['host_os'] =~ /darwin|mac/ ? "GetFileInfo" : "stat"
+get_info = RbConfig::CONFIG['host_os'] =~ /darwin|mac/ ? 'GetFileInfo' : 'stat'
 
 puts `find . -name "#{keyword}*"`.split.map { |f|
   `#{get_info} #{f}`
-}.join "\n"
+}.join '\n'

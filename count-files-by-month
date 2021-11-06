@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 if ARGV.empty?
   script = File.basename($PROGRAM_NAME)
@@ -8,30 +9,30 @@ end
 
 year = File.basename(ARGV[0])
 if year !~ /^\d{4}$/
-  puts "error: directory is not valid (yyyy)"
+  puts 'error: directory is not valid (yyyy)'
   exit 2
-elsif !Dir.exists?(year)
+elsif !Dir.exist?(year)
   puts "error: directory '#{year}' doesn't exist"
   exit 3
 end
 
 jpgs = [
-  "*.jpg", "*.jpeg", "*.JPG"
+  '*.jpg', '*.jpeg', '*.JPG'
 ]
 all = jpgs + [
-  "*.bmp", "*.BMP",
-  "*.gif", "*.GIF",
-  "*.mov", "*.MOV",
-  "*.avi", "*.AVI",
-  "*.3g*", "*.3G*",
-  "*.mp4"
+  '*.bmp', '*.BMP',
+  '*.gif', '*.GIF',
+  '*.mov', '*.MOV',
+  '*.avi', '*.AVI',
+  '*.3g*', '*.3G*',
+  '*.mp4'
 ]
 
-puts "    \t all\tjpeg\tdiff"
-for m in 1..12
-  month = (m < 10 ? "0" : "") + m.to_s
-  all_num = `find #{year} -name #{all.join(" -or -name ")} | grep #{year + month} | wc -l`.strip
-  jpg_num = `find #{year} -name #{jpgs.join(" -or -name ")} | grep #{year + month} | wc -l`.strip
+puts '    \t all\tjpeg\tdiff'
+(1..12).each do |m|
+  month = (m < 10 ? '0' : '') + m.to_s
+  all_num = `find #{year} -name #{all.join(' -or -name ')} | grep #{year + month} | wc -l`.strip
+  jpg_num = `find #{year} -name #{jpgs.join(' -or -name ')} | grep #{year + month} | wc -l`.strip
   diff = all_num.to_i - jpg_num.to_i
   puts "#{month} =\t#{all_num.rjust(4)}\t#{jpg_num.rjust(4)}\t#{diff.to_s.rjust(4)}"
 end
